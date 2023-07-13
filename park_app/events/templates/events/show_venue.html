@@ -1,0 +1,23 @@
+{% extends 'events/base.html' %}
+
+{% block content %}
+	<br/>
+	<!-- HTML cards to make the info display nicer-->
+	<div class="card">
+	  <div class="card-header">
+	    Venue
+	  </div>
+	  <div class="card-body">
+	    <h5 class="card-title">{{ venue }}</h5>
+	    <p class="card-text">
+	    
+	<ul>
+	<li>{{ venue.description }}</li><br/>
+	</ul>
+	    </p>
+	  </div>
+	</div>
+
+
+
+{% endblock %}
