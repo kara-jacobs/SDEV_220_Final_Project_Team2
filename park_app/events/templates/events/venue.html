@@ -6,7 +6,7 @@
 	
 	<br/>
 	<table class="table table-hover table-striped table-bordered">
-	{% for venue in venue_list %}
+	{% for venue in venues %}
 		<tr>
 			<td><a href="{% url 'show-venue' venue.id %}">{{ venue }}</a> 
 			</td>
@@ -16,8 +16,50 @@
 			</td>
 		</tr>
 	{% endfor %}
-
-
 	</table>
+	
+	<!--
+	{{venues}}<br>
+	Has Previous: {{venues.has_previous}}<br>
+	Has Next: {{venues.has_next}}<br>
+	Current Page: {{venues.number}}<br>
+	Number of Pages: {{venues.paginator.num_pages}}
+	<hr><br><br>
+	
 
+	<nav aria-label="Page navigation example">
+		<ul class="pagination">
+		  <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+		  <li class="page-item"><a class="page-link" href="#">1</a></li>
+		  <li class="page-item"><a class="page-link" href="#">2</a></li>
+		  <li class="page-item"><a class="page-link" href="#">3</a></li>
+		  <li class="page-item"><a class="page-link" href="#">Next</a></li>
+		</ul>
+	</nav>
+	-->
+
+
+
+	<br><br>
+	<nav aria-label="Page navigation example">
+		<ul class="pagination">
+
+			
+
+
+			{% if venues.has_previous %}
+			<li class="page-item"></li><a class="page-link" href="?page=1">&laquo First</a></li>
+			<li class="page-item"></li><a class="page-link" href="?page={{venues.previous_page_number}}">Previous</a></li>
+			{% endif %}
+
+			{% for i in nums %}
+			<li class="page-item"><a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+			{% endfor %}
+
+			{% if venues.has_next %}
+			<li class="page-item"></li><a class="page-link" href="?page={{venues.next_page_number}}">Next</a></li>
+			<li class="page-item"></li><a class="page-link" href="?page={{venues.paginator.num_pages}}">Last &raquo</a></li>
+			{% endif %}
+		</ul>
+	</nav>
 {% endblock %}
