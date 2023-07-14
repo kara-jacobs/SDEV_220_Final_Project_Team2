@@ -2,11 +2,40 @@ from django.shortcuts import render, redirect
 import calendar
 from calendar import HTMLCalendar
 from datetime import datetime
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from .models import Event, Venue
 from .forms import VenueForm, EventForm
+from django.core.paginator import Paginator
+
+
+########## We will probably cut this feature. 
+########## Or redo it to print out details of an event instead.
+# generate a text file that lists the venues
+def venue_text(request):
+	response = HttpResponse(content_type='text/plain')
+	response['Content-Disposition'] = 'attachment; filename=venues.txt'
+
+	lines = [] # empty list to be returned later
+	venue_list = Venue.objects.all() # get the venues
+	for ven in venue_list: # append them to list line by line
+		lines.append(f'{ven}\n')
+	
+	# write the filled list to a text file
+	response.writelines(lines)
+	return response
+
 
 # Create your views here.
+
+def delete_venue(request, venue_id):
+	venue = Venue.objects.get(pk=venue_id)
+	venue.delete()
+	return redirect('list-venues')
+
+def delete_event(request, event_id):
+	event = Event.objects.get(pk=event_id)
+	event.delete()
+	return redirect('list-events')
 
 
 def add_event(request):
@@ -57,8 +86,15 @@ def show_venue(request, venue_id):
 
 
 def list_venues(request):
-	venue_list = Venue.objects.all() # grabs all of the objects in the Venue class
-	return render(request, 'events/venue.html', {'venue_list': venue_list})
+	# grabs all of the objects in the Venue class
+	venue_list = Venue.objects.all().order_by('name') 
+
+	p = Paginator(Venue.objects.all().order_by('name'), 2)
+	page = request.GET.get('page')
+	venues = p.get_page(page)
+
+	return render(request, 'events/venue.html', {'venue_list': venue_list,
+					      'venues':venues})
 
 
 def add_venue(request):
@@ -76,7 +112,8 @@ def add_venue(request):
 
 
 def all_events(request):
-	event_list = Event.objects.all() # grabs all of the objects in the Event class
+	# grabs all of the objects in the Event class
+	event_list = Event.objects.all().order_by('timeslot')
 	return render(request, 'events/event_list.html', {'event_list': event_list})
 
 
