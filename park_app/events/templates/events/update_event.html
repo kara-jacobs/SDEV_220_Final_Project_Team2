@@ -2,6 +2,9 @@
 
 {% block content %}
 
+
+{% if user.is_authenticated %}
+
 	<h1>Update Event...</h1>
 	<br/>
 	<form action="" method="POST">
@@ -9,5 +12,11 @@
 		{{ form.as_p }}
 		<br/>
 		<input type="submit" value="Update" class="btn btn-secondary"> <!--Submit button-->
+
+{% else %}
+	<h1>Must be Logged In to update events.</h1>
+	<a href="{% url 'login' %}">Login Here</a>
+{% endif %}
+	
 
 {% endblock %}
