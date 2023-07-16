@@ -106,15 +106,16 @@ def add_venue(request):
 	submitted = False # ensures nothing is posted when you first navigate to the page
 	if request.method == "POST":
 		form = VenueForm(request.POST) # passes what was posted into the Venue form
-		if form.is_valid():
-			form.save() # if the data in the form is valid, it ets saved to the database
+		if form.is_valid(): 
+			venue = form.save(commit=False) # if the data in the form is valid, it ets saved to the database
+			venue.owner = request.user.id # logged in user
+			venue.save()
 			return HttpResponseRedirect('/add_venue?submitted=True')
 	else: # if the form is submitted, submitted will be equal to True
 		form = VenueForm
 		if 'submitted' in request.GET:
 			submitted = True
 	return render(request, 'events/add_venue.html', {'form':form, 'submitted':submitted})
-
 
 def all_events(request):
 	# grabs all of the objects in the Event class
