@@ -16,7 +16,7 @@ class ParkAppUser(models.Model):
 class Venue(models.Model):
 	name = models.CharField('Venue Name', max_length=120)
 	description = models.TextField(blank=True)
-
+	owner = models.IntegerField("Venue Owner", blank=False, default=1)
 	def __str__(self): # lets you click on a venue to access it
 		return self.name
 
