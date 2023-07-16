@@ -4,7 +4,7 @@ from calendar import HTMLCalendar
 from datetime import datetime
 from django.http import HttpResponseRedirect, HttpResponse
 from .models import Event, Venue
-from .forms import VenueForm, EventForm
+from .forms import VenueForm, EventForm, EventFormAdmin
 from django.core.paginator import Paginator
 
 
@@ -41,12 +41,25 @@ def delete_event(request, event_id):
 def add_event(request):
 	submitted = False # ensures nothing is posted when you first navigate to the page
 	if request.method == "POST":
-		form = EventForm(request.POST) # passes what was posted into the Venue form
-		if form.is_valid():
-			form.save() # if the data in the form is valid, it's saved to the database
-			return HttpResponseRedirect('/add_event?submitted=True')
+		if request.user.is_superuser:
+			form = EventFormAdmin(request.POST) # passes what was posted into the Venue form for admin
+			if form.is_valid():
+				form.save() # if the data in the form is valid, it's saved to the database
+				return HttpResponseRedirect('/add_event?submitted=True')
+		else:
+			form = EventForm(request.POST) # passes what was posted into the user form for other users
+			if form.is_valid():
+				#form.save()  if the data in the form is valid, it's saved to the database
+				event = form.save(commit=False)
+				event.host = request.user # logged in username
+				event.save()
+				return HttpResponseRedirect('/add_event?submitted=True')
 	else: # if the form is submitted, submitted will be equal to True
-		form = EventForm
+		if user.is_superuser:
+			form = EventFormAdmin
+		else:
+			form = EventForm
+			
 		if 'submitted' in request.GET:
 			submitted = True
 	return render(request, 'events/add_event.html', {'form':form, 'submitted':submitted})
