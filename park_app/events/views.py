@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from .models import Event, Venue
 from .forms import VenueForm, EventForm, EventFormAdmin
 from django.core.paginator import Paginator
+from django.contrib import messages
 
 
 ########## We will probably cut this feature. 
@@ -34,9 +35,13 @@ def delete_venue(request, venue_id):
 
 def delete_event(request, event_id):
 	event = Event.objects.get(pk=event_id)
-	event.delete()
-	return redirect('list-events')
-
+	if request.user == event.host:
+		event.delete()
+		messages.success(request, ("Event Deleted!!"))
+		return redirect('list-events')
+	else:
+		messages.success(request, ("You Aren't Authorized To Delete This Event!!!"))
+		return redirect('list-events')
 
 def add_event(request):
 	submitted = False # ensures nothing is posted when you first navigate to the page
