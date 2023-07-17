@@ -4,6 +4,9 @@ from calendar import HTMLCalendar
 from datetime import datetime
 from django.http import HttpResponseRedirect, HttpResponse
 from .models import Event, Venue
+
+#Import user model from django
+from django.contrib.auth.models import User
 from .forms import VenueForm, EventForm, EventFormAdmin
 from django.core.paginator import Paginator
 from django.contrib import messages
@@ -104,6 +107,7 @@ def search_venues(request):
 
 def show_venue(request, venue_id):
 	venue = Venue.objects.get(pk=venue_id)
+	venue_owner = User.objects.get(pk=venue.owner)
 	return render(request, 'events/show_venue.html', {'venue': venue})
 
 
