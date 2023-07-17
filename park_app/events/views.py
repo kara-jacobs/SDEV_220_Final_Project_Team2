@@ -11,6 +11,8 @@ from .forms import VenueForm, EventForm, EventFormAdmin
 from django.core.paginator import Paginator
 from django.contrib import messages
 
+#Create my events page
+def my_events(request):
 
 ########## We will probably cut this feature. 
 ########## Or redo it to print out details of an event instead.
