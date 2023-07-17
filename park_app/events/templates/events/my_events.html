@@ -6,7 +6,39 @@
 	<br/>
 
 	{% for event in events %}
+<div class="card">
+	  <div class="card-header">
+	    {{ event }}
+	  </div>
+	  <div class="card-body">
+	    <h5 class="card-title">Venue: {{ event.venue }}</h5>
+	    <p class="card-text">
+	    
+	<ul>
+		<li>Date: {{ event.timeslot }}</li>
+		<li>Venue: {{ event.venue }}</li>
+		<li>Host: {{ event.host }}</li>
+		<li>Description: {{ event.description }}</li>
 
+		<!-- for loop to print out list of attendees on Events page-->
+		<li>Attendees:<br/>
+		{% for user in event.attendees.all %}
+		{{ user }}<br/>
+		{% endfor %} 
+		</li>
+	</ul>
+	    </p>
+	</div>
+	{% if user.is_authenticated %}
+	  	<div class="card-footer text-muted">
+	  		<a href="{% url 'update-event' event.id %}" class="btn btn-outline-secondary btn-sm">Update Event</a>
+			<a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm">Delete Event</a>
+	  	</div>
+	{% endif %}
+	</div>
+
+<br/>
+<br/>
 
 		
 	{% endfor %}
