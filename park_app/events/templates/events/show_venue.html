@@ -12,14 +12,18 @@
 	    <p class="card-text">
 	    
 	<ul>
-	<li>{{ venue.description }}</li><br/>
-	<li>Owner: {{ venue_owner }} </li>
-	<li>Owner's Email: {{ venue_owner.email }} </li>
+		<li>{{ venue.description }}</li>
+		<li>Owner: {{ venue_owner }} </li>
+		<li>Owner's Email: {{ venue_owner.email }} </li>
 	</ul>
+	<br/>
+
+	{% if venue.venue_image %}
+	<img src="{{ venue.venue_image.url }}" width=500>
+	{% endif %}
+
 	    </p>
 	  </div>
 	</div>
-
-
 
 {% endblock %}

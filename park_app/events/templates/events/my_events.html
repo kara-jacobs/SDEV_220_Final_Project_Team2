@@ -1,16 +1,17 @@
 {% extends 'events/base.html' %}
 
 {% block content %}
-	
+
 	<h2>My Events</h2>
 	<br/>
 
 	{% for event in events %}
-<div class="card">
-	  <div class="card-header">
-	    {{ event }}
-	  </div>
-	  <div class="card-body">
+
+		<div class="card">
+	  	<div class="card-header">
+	    	<h4>{{ event }}</h4>
+	  	</div>
+	  	<div class="card-body">
 	    <h5 class="card-title">Venue: {{ event.venue }}</h5>
 	    <p class="card-text">
 	    
@@ -28,22 +29,27 @@
 		</li>
 	</ul>
 	    </p>
+
+	{% if event.event_image %}
+	<img src="{{ event.event_image.url }}" width=500>
+	{% endif %}
+
 	</div>
 	{% if user.is_authenticated %}
-	  	<div class="card-footer text-muted">
-	  		<a href="{% url 'update-event' event.id %}" class="btn btn-outline-secondary btn-sm">Update Event</a>
-			<a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm">Delete Event</a>
-	  	</div>
+		{% if user == event.host %}
+		  	<div class="card-footer text-muted">
+		  		<a href="{% url 'update-event' event.id %}" class="btn btn-outline-secondary btn-sm">Update Event</a>
+				<a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm">Delete Event</a>
+		  	</div>
+		{% endif %}
 	{% endif %}
 	</div>
 
 <br/>
 <br/>
+			
 
-		
 	{% endfor %}
-
-	
 
 
 {% endblock %}
