@@ -19,7 +19,7 @@ def my_events(request):
 	if request.user.is_authenticated:
 		me = request.user.id
 
-		events = Event.objects.filter(attendees=me)
+		events = Event.objects.filter(host=me)
 		return render(request, 
 			'events/my_events.html', {"events": events
 			})
