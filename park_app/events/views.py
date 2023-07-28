@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 import calendar
 from calendar import HTMLCalendar
 from datetime import datetime
@@ -6,12 +6,14 @@ from django.http import HttpResponseRedirect, HttpResponse
 from .models import Event, Venue
 from .forms import VenueForm, EventForm, EventFormAdmin
 from django.contrib import messages
+from django.urls import reverse_lazy, reverse
 
 # Import user model from django
 from django.contrib.auth.models import User 
 
 # Import Pagination Stuff
 from django.core.paginator import Paginator
+
 
 
 # Create My Events Page
@@ -208,3 +210,19 @@ def home(request, year=datetime.now().year, month=datetime.now().strftime('%B'))
 	"time": time,
 	"event_list": event_list,
 	})
+
+
+def event_attend(request, pk):
+	if request.user.is_authenticated:
+		event = get_object_or_404(Event, id=pk)
+		if event.attendance.filter(id=request.user.id):
+			event.attendance.remove(request.user)
+			messages.success(request, ("Your RSVP has been cancelled."))
+		else:
+			event.attendance.add(request.user)
+			messages.success(request, ("RSVP successful. See you soon!"))
+		return redirect('list-events')
+
+	else:
+		messages.success(request, ("Please Log In to Continue."))
+		return redirect('home')

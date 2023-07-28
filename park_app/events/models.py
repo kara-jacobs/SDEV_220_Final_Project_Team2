@@ -31,6 +31,7 @@ class Event(models.Model):
 	attendees = models.ManyToManyField(ParkAppUser, blank=True)
 	description = models.TextField(blank=True)
 	event_image = models.ImageField(null=True, blank=True, upload_to="images/")
+	attendance = models.ManyToManyField(User, related_name='attend', blank=True)
 	#fee =
 	#capacity =
 	#sanction_status =
@@ -53,4 +54,8 @@ class Event(models.Model):
 		else:
 			happens = "Future"
 		return happens
+
+	# Keep track of count of people attending
+	def number_of_attends(self):
+		return self.attendance.count()
 	
