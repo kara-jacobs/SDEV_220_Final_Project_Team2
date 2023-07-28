@@ -9,9 +9,6 @@ virtual/
 myvenv/
 venv/
 
-# Static folder at project root
-/static/
-
 # macOS
 ._*
 .DS_Store

@@ -13,7 +13,7 @@
 		Your Venue Was Submitted Successfully!
 	{% else %}
 	
-	<form action="" method=POST>
+	<form action="" method=POST enctype="multipart/form-data">
 		{% csrf_token %} <!--Secuity token-->
 
 		{{ form.as_p }}<!--Tag to get the form to appear onscreen-->
