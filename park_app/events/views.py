@@ -77,7 +77,7 @@ def add_event(request):
 				form.save() # if the data in the form is valid, it's saved to the database
 				return HttpResponseRedirect('/add_event?submitted=True')
 		else:
-			form = EventForm(request.POST) # passes what was posted into the Venue form
+			form = EventForm(request.POST, request.FILES) # passes what was posted into the Venue form
 			if form.is_valid():
 				event = form.save(commit=False)
 				event.host = request.user
