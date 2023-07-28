@@ -24,8 +24,15 @@
 			<li>Owner ID: {{ venue.owner }} </li>
 		{% endif %}
 		</ul>
+
+		<br/>
+		{% if venue.venue_image %}
+		<img src="{{ venue.venue_image.url }}" width=500>
+		{% endif %}
 		
 		    </p>
+
+
 		  </div>
 		</div>
 			<br/>

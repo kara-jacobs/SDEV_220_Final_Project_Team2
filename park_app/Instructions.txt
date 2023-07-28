@@ -1,0 +1,28 @@
+(1.) Make a folder for your directory.
+
+(2.) Open Git Bash inside that folder (right click inside the folder and click 'Open Git Bash Here')
+
+(3.) Install a virtual environment:
+python -m venv <name>
+
+(4.) Activate virtual environment:
+source <name>/Scripts/activate
+
+(5.) Install Django:
+pip install Django
+
+(6.) Start Project:
+django-admin startproject park_app
+
+(7.) Navigate to park_app folder
+cd park_app
+
+(8.) Start Server inside Virtual Environment:
+python manage.py runserver
+
+(9.) Start App
+python manage.py startapp events
+
+(10.) Create a Superuser
+python manage.py migrate
+winpty manage.py createsuperuser
