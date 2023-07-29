@@ -1,15 +1,21 @@
 {% extends 'events/base.html' %}
 
 {% block content %}
+
+
+<!--Home Page greets the current user-->
 	<center>
 	<h1>Hello {{ user }}! Events for {{ month }} {{ year }}</h1>
 
+	<!--Calendar that displays the current month and time-->
 	As of {{ time }}
 	<br/><br/>
 	{{ cal|safe }} <!--the |safe filter is added which allows the calendar to display properly-->
 	<br/><br/>
 	</center>
 
+
+	<!--Events happening this month are shown using a for loop-->
 	<h3>Events This Month...</h3>
 
 	{% if event_list %}
@@ -18,8 +24,10 @@
 	  <div class="card-header">
 	    <h4>{{ event }}</h4>
 
+	    <!--RSVP to Event button-->
 	    <a href="{% url 'event_attend' event.id %}" class="btn btn-success" data-toggle="button">RSVP to Event</a>
 
+	    <!--Counter to show how many people are attending-->
 	  	---Number of Attendees: {{ event.number_of_attends }} 
 
 	  </div>
@@ -46,6 +54,7 @@
 	<img src="{{ event.event_image.url }}" width=500>
 	{% endif %}
 	    
+	<!--Update and Delete buttons only display on events user created, only when logged in-->
 	</div>
 	{% if user.is_authenticated %}
 		{% if user == event.host %}
@@ -68,4 +77,5 @@
 	Copyright (c) {{ current_year }}
 
 	</center>
+
 {% endblock %}

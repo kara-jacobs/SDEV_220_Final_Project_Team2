@@ -2,17 +2,22 @@
 
 {% block content %}
 
+
+<!--Displays all events that a logged in user has created-->
 	<h2>My Events</h2>
 	<br/>
 
+	<!--For loop to display Event cards-->
 	{% for event in events %}
 
 		<div class="card">
 	  	<div class="card-header">
 	    	<h4>{{ event }}</h4>
 
+	    <!--RSVP to Event button-->
 	    <a href="{% url 'event_attend' event.id %}" class="btn btn-success" data-toggle="button">RSVP to Event</a>
 
+	    <!--Counter to show how many people are attending-->
 	  	---Number of Attendees: {{ event.number_of_attends }} 
 	    	
 	  	</div>
@@ -39,6 +44,7 @@
 	<img src="{{ event.event_image.url }}" width=500>
 	{% endif %}
 
+	<!--Update and Delete buttons only display on events user created, only when logged in-->
 	</div>
 	{% if user.is_authenticated %}
 		{% if user == event.host %}
@@ -49,10 +55,8 @@
 		{% endif %}
 	{% endif %}
 	</div>
-
 <br/>
-<br/>
-			
+<br/>	
 
 	{% endfor %}
 

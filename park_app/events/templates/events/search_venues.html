@@ -2,11 +2,14 @@
 
 {% block content %}
 	
+
+<!--Displays search results for Search Venues bar-->
 	{% if searched %}
 		<h1>You Searched For {{ searched }}</h1>
 		<br/>
+
+		<!--For loop to display relevant results-->
 		{% for venue in venues %}
-			
 			<div class="card">
 		  	<div class="card-header">
 		    Venue
@@ -20,6 +23,7 @@
 			<li>{{ venue.description }}</li>
 		{% endif %}
 
+		<!--Displays Venue owner ID-->
 		{% if venue.owner %}
 			<li>Owner ID: {{ venue.owner }} </li>
 		{% endif %}
@@ -31,12 +35,9 @@
 		{% endif %}
 		
 		    </p>
-
-
 		  </div>
 		</div>
 			<br/>
-
 		{% endfor %}
 
 	{% else %}

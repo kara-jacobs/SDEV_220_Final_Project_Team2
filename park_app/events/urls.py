@@ -8,6 +8,8 @@ from . import views
 # slug hyphen-and_underscore_stuff
 # UUID universally unique identifier
 
+
+# URLS For all of the pages
 urlpatterns = [
     path('', views.home, name="home"),
     path('<int:year>/<str:month>/', views.home, name="home"),

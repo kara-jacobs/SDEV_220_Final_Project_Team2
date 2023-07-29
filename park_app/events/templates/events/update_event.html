@@ -3,6 +3,7 @@
 {% block content %}
 
 
+<!--Displays the Update Event form if user is logged in-->
 {% if user.is_authenticated %}
 	{% if user == event.host %}
 
@@ -12,7 +13,8 @@
 		{% csrf_token %} <!--Security Token-->
 		{{ form.as_p }}
 		<br/>
-		<input type="submit" value="Update" class="btn btn-secondary"> <!--Submit button-->
+		<!--Submit button-->
+		<input type="submit" value="Update" class="btn btn-secondary"> 
 
 	{% else %}
 		<h2>Access Denied</h2>

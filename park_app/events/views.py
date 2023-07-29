@@ -16,21 +16,6 @@ from django.core.paginator import Paginator
 
 
 
-# Create My Events Page
-def my_events(request):
-	if request.user.is_authenticated:
-		me = request.user.id
-
-		events = Event.objects.filter(host=me)
-		return render(request, 
-			'events/my_events.html', {"events": events
-			})
-
-	else:
-		messages.success(request, ("You Aren't Authorized To View This Page"))
-		return redirect('home')
-
-
 ########## We will probably cut this feature. 
 ########## Or redo it to print out details of an event instead.
 # generate a text file that lists the venues
@@ -48,6 +33,33 @@ def venue_text(request):
 	return response
 
 
+# Add a Venue
+def add_venue(request):
+	submitted = False # ensures nothing is posted when you first navigate to the page
+	if request.method == "POST":
+		form = VenueForm(request.POST, request.FILES) # passes what was posted into the Venue form
+		if form.is_valid():
+			venue = form.save(commit=False) # doesn't save until user id is added
+			venue.owner = request.user.id # logged in user
+			venue.save()
+			return HttpResponseRedirect('/add_venue?submitted=True')
+	else: # if the form is submitted, submitted will be equal to True
+		form = VenueForm
+		if 'submitted' in request.GET:
+			submitted = True
+	return render(request, 'events/add_venue.html', {'form':form, 'submitted':submitted})
+
+
+# Update a Venue
+def update_venue(request, venue_id):
+	venue = Venue.objects.get(pk=venue_id)
+	form = VenueForm(request.POST or None, request.FILES or None, instance=venue) # the form is populated with the previous Venue data
+	if form.is_valid():
+		form.save()
+		return redirect('list-venues')
+	return render(request, 'events/update_venue.html', {'venue': venue, 'form': form})
+
+
 # Delete a Venue
 def delete_venue(request, venue_id):
 	venue = Venue.objects.get(pk=venue_id)
@@ -55,16 +67,55 @@ def delete_venue(request, venue_id):
 	return redirect('list-venues')
 
 
-# Delete an Event
-def delete_event(request, event_id):
-	event = Event.objects.get(pk=event_id)
-	if request.user == event.host:
-		event.delete()
-		messages.success(request, ("Event Deleted!!"))
-		return redirect('list-events')
+# Search Through Venues
+def search_venues(request):
+	if request.method == "POST":
+		searched = request.POST['searched']
+		venues = Venue.objects.filter(name__contains=searched) # passes in whatever the user searched for
+		return render(request, 'events/search_venues.html', {'searched': searched, 'venues': venues})
+		return render(request, 'events/search_venues.html', {})
 	else:
-		messages.success(request, ("You Aren't Authorized To Delete This Event!!!"))
-		return redirect('list-events')
+		return render(request, 'events/search_venues.html', {})
+
+
+# Show a Venue
+def show_venue(request, venue_id):
+	venue = Venue.objects.get(pk=venue_id)
+	venue_owner = User.objects.get(pk=venue.owner)
+	return render(request, 'events/show_venue.html', {'venue': venue, 'venue_owner': venue_owner})
+
+
+# List All Venues
+def list_venues(request):
+	# grabs all of the objects in the Venue class
+	venue_list = Venue.objects.all().order_by('name') 
+
+	# creates multiple pages for content
+	p = Paginator(Venue.objects.all().order_by('name'), 8)
+	page = request.GET.get('page')
+	venues = p.get_page(page)
+	nums = "a" * venues.paginator.num_pages
+
+	return render(request, 'events/venue.html', 
+	       				{'venue_list': venue_list,
+					    'venues':venues,
+					    'nums':nums
+						})
+
+
+# Create My Events Page
+def my_events(request):
+	if request.user.is_authenticated:
+		me = request.user.id
+
+		events = Event.objects.filter(host=me)
+		return render(request, 
+			'events/my_events.html', {"events": events
+			})
+
+	else:
+		messages.success(request, ("You Aren't Authorized To View This Page"))
+		return redirect('home')
 
 
 # Add an Event
@@ -107,75 +158,43 @@ def update_event(request, event_id):
 	return render(request, 'events/update_event.html', {'event': event, 'form': form})
 
 
-# Update a Venue
-def update_venue(request, venue_id):
-	venue = Venue.objects.get(pk=venue_id)
-	form = VenueForm(request.POST or None, request.FILES or None, instance=venue) # the form is populated with the previous Venue data
-	if form.is_valid():
-		form.save()
-		return redirect('list-venues')
-	return render(request, 'events/update_venue.html', {'venue': venue, 'form': form})
-
-
-# Search Through Venues
-def search_venues(request):
-	if request.method == "POST":
-		searched = request.POST['searched']
-		venues = Venue.objects.filter(name__contains=searched) # passes in whatever the user searched for
-		return render(request, 'events/search_venues.html', {'searched': searched, 'venues': venues})
-		return render(request, 'events/search_venues.html', {})
+# Delete an Event
+def delete_event(request, event_id):
+	event = Event.objects.get(pk=event_id)
+	if request.user == event.host:
+		event.delete()
+		messages.success(request, ("Event Deleted!!"))
+		return redirect('list-events')
 	else:
-		return render(request, 'events/search_venues.html', {})
+		messages.success(request, ("You Aren't Authorized To Delete This Event!!!"))
+		return redirect('list-events')
 
 
-# Show a Venue
-def show_venue(request, venue_id):
-	venue = Venue.objects.get(pk=venue_id)
-	venue_owner = User.objects.get(pk=venue.owner)
-	return render(request, 'events/show_venue.html', {'venue': venue, 'venue_owner': venue_owner})
-
-
-# List All Venues
-def list_venues(request):
-	# grabs all of the objects in the Venue class
-	venue_list = Venue.objects.all().order_by('name') 
-
-	# creates multiple pages for content
-	p = Paginator(Venue.objects.all().order_by('name'), 8)
-	page = request.GET.get('page')
-	venues = p.get_page(page)
-	nums = "a" * venues.paginator.num_pages
-
-	return render(request, 'events/venue.html', 
-	       				{'venue_list': venue_list,
-					    'venues':venues,
-					    'nums':nums
-						})
-
-
-# Add a Venue
-def add_venue(request):
-	submitted = False # ensures nothing is posted when you first navigate to the page
-	if request.method == "POST":
-		form = VenueForm(request.POST, request.FILES) # passes what was posted into the Venue form
-		if form.is_valid():
-			venue = form.save(commit=False) # doesn't save until user id is added
-			venue.owner = request.user.id # logged in user
-			venue.save()
-			return HttpResponseRedirect('/add_venue?submitted=True')
-	else: # if the form is submitted, submitted will be equal to True
-		form = VenueForm
-		if 'submitted' in request.GET:
-			submitted = True
-	return render(request, 'events/add_venue.html', {'form':form, 'submitted':submitted})
-
-
+# Lists all Events
 def all_events(request):
 	# grabs all of the objects in the Event class
 	event_list = Event.objects.all().order_by('timeslot')
 	return render(request, 'events/event_list.html', {'event_list': event_list})
 
 
+# Event RSVP Button
+def event_attend(request, pk):
+	if request.user.is_authenticated:
+		event = get_object_or_404(Event, id=pk)
+		if event.attendance.filter(id=request.user.id):
+			event.attendance.remove(request.user)
+			messages.success(request, ("Your RSVP has been cancelled."))
+		else:
+			event.attendance.add(request.user)
+			messages.success(request, ("RSVP successful. See you soon!"))
+		return redirect('list-events')
+
+	else:
+		messages.success(request, ("Please Log In to Continue."))
+		return redirect('home')
+
+
+# Home Page and Calendar Stuff
 def home(request, year=datetime.now().year, month=datetime.now().strftime('%B')): # Year & month are dynamically updated
 	name = "John"
 	month = month.capitalize() # converts month name in the url to title case
@@ -212,17 +231,3 @@ def home(request, year=datetime.now().year, month=datetime.now().strftime('%B'))
 	})
 
 
-def event_attend(request, pk):
-	if request.user.is_authenticated:
-		event = get_object_or_404(Event, id=pk)
-		if event.attendance.filter(id=request.user.id):
-			event.attendance.remove(request.user)
-			messages.success(request, ("Your RSVP has been cancelled."))
-		else:
-			event.attendance.add(request.user)
-			messages.success(request, ("RSVP successful. See you soon!"))
-		return redirect('list-events')
-
-	else:
-		messages.success(request, ("Please Log In to Continue."))
-		return redirect('home')

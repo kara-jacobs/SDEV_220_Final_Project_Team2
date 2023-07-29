@@ -1,3 +1,5 @@
+
+<!--Navbar configuration and home button-->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
     <a class="navbar-brand" href="{% url 'home' %}">Park Event Planner</a>
@@ -8,14 +10,14 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
 
-
-        <!-- Events -->
+        <!--Events dropdown menu-->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Events
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="{% url 'list-events' %}">Events</a></li>
+            <!--These will diplay if user is logged in-->
             {% if user.is_authenticated %}
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="{% url 'add-event' %}">Add Event</a></li>
@@ -25,13 +27,15 @@
           </ul>
         </li>
         
-        <!-- Venue -->
+
+        <!--Venues dropdown menu-->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Venues
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="{% url 'list-venues' %}">Venues</a>
+            <!--These will diplay if user is logged in-->
             {% if user.is_authenticated %}
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="{% url 'add-venue' %}">Add Venue</a>
@@ -40,6 +44,7 @@
         </li>
       
 
+        <!--Login and Logout feature-->
         {% if user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'logout' %}">Logout</a>
@@ -62,6 +67,7 @@
 
       </ul>
 
+      <!--Search Bar to search Venues-->
       <form class="d-flex" role="search" method="POST" action="{% url 'search-venues' %}">
         {% csrf_token %}
         <input class="form-control me-2" type="search" placeholder="Search Venues" aria-label="Search" name="searched">

@@ -4,6 +4,8 @@ from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from .forms import RegisterUserForm
 
+
+# User login
 def login_user(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -22,12 +24,14 @@ def login_user(request):
         return render(request, 'authenticate/login.html')
 
 
+# User logout
 def logout_user(request):
     logout(request)
     messages.success(request, ("Logged out."))
     return redirect('home')
 
 
+# User registration
 def register_user(request):
     if request.method == "POST":
         form = RegisterUserForm(request.POST)

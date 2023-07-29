@@ -6,18 +6,16 @@ from .models import Venue
 from .models import Event
 
 # Register your models here.
-
 admin.site.register(ParkAppUser)
-#admin.site.register(Venue)
-#admin.site.register(Event)
 
-# lists venue names alphabetically & lets an admin search by name
+# Lists venue names alphabetically & lets an admin search by name
 @admin.register(Venue)
 class VenueAdmin(admin.ModelAdmin):
 	list_display = ('name',)
 	ordering = ('name',)
 	search_fields = ('name',)
 
+# Events stuff for admin section
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
 	fields = (('name', 'venue'), 'timeslot', 'description', 'host', 'event_image', 'attendance')

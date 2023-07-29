@@ -2,15 +2,17 @@
 
 {% block content %}
 
-
 	<h1>Venues</h1>
 	
+	<!--For loop to display a list of Venue links-->
 	<br/>
 	<table class="table table-hover table-striped table-bordered">
 	{% for venue in venues %}
 		<tr>
 			<td><a href="{% url 'show-venue' venue.id %}">{{ venue }}</a> 
 			</td>
+
+			<!--Update and delete buttons are only visible to a logged in admin-->
 			{% if user.is_authenticated %}
 				{% if user.is_superuser %}
 			<td align="right">
@@ -22,12 +24,12 @@
 		</tr>
 	{% endfor %}
 	</table>
-
 	<br><br>
+
+	<!--Pagination at bottom of Venues page-->
 	<nav aria-label="Page navigation example">
 		<ul class="pagination">
-
-
+			
 			{% if venues.has_previous %}
 			<li class="page-item"></li><a class="page-link" href="?page=1">&laquo First</a></li>
 			<li class="page-item"></li><a class="page-link" href="?page={{venues.previous_page_number}}">Previous</a></li>

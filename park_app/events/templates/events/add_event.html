@@ -3,9 +3,10 @@
 {% block content %}
 
 
+<!--Add Event page, only accessible when logged in-->
 {% if user.is_authenticated %}
-
 	<h1>Add Event</h1>
+
 	<br/><br/>
 	{% if submitted %}
 		Your Event Was Submitted Successfully!
@@ -16,6 +17,7 @@
 
 		{{ form.as_p }}<!--Tag to get the form to appear onscreen-->
 
+		<!--Submit button-->
 		<input type="submit" value="Submit" class="btn btn-secondary">
 	</form>
 	{% endif %}
@@ -26,7 +28,6 @@
 
 	<h1>Must be Logged In to add events.</h1>
 	<a href="{% url 'login' %}">Login Here</a>
-
 {% endif %}
 
 
